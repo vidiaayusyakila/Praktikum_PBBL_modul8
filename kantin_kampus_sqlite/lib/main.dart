@@ -4,15 +4,20 @@ import 'cubit/keranjang_cubit.dart';
 import 'cubit/theme_cubit.dart';
 import 'pages/halaman_produk.dart';
 import 'pages/halaman_keranjang.dart';
+import 'pages/halaman_favorit.dart';
+import 'pages/halaman_pengaturan.dart';
 import 'theme/app_theme.dart';
- 
-void main() {
+import 'helpers/hive_helper.dart';
+
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await HiveHelper.init();
   runApp(const KantinKampusApp());
 }
- 
+
 class KantinKampusApp extends StatelessWidget {
   const KantinKampusApp({super.key});
- 
+
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -34,18 +39,23 @@ class KantinKampusApp extends StatelessWidget {
     );
   }
 }
- 
+
 class KerangkaUtama extends StatefulWidget {
   const KerangkaUtama({super.key});
- 
+
   @override
   State<KerangkaUtama> createState() => _KerangkaUtamaState();
 }
- 
+
 class _KerangkaUtamaState extends State<KerangkaUtama> {
   int _indeks = 0;
-  final _halaman = const [HalamanProduk(), HalamanKeranjang()];
- 
+  final _halaman = const [
+    HalamanProduk(),
+    HalamanKeranjang(),
+    HalamanPengaturan(),
+    HalamanFavorit(),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,6 +66,8 @@ class _KerangkaUtamaState extends State<KerangkaUtama> {
         destinations: const [
           NavigationDestination(icon: Icon(Icons.storefront), label: 'Produk'),
           NavigationDestination(icon: Icon(Icons.shopping_cart), label: 'Keranjang'),
+          NavigationDestination(icon: Icon(Icons.settings), label: 'Pengaturan'),
+          NavigationDestination(icon: Icon(Icons.favorite), label: 'Favorit'),
         ],
       ),
     );

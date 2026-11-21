@@ -2,19 +2,30 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/keranjang_cubit.dart';
+import '../helpers/hive_helper.dart';
 import '../models/produk.dart';
+import '../models/produk_favorit.dart';
 import '../widgets/product_card.dart';
 import '../widgets/theme_toggle_button.dart';
- 
+
 class HalamanProduk extends StatelessWidget {
   const HalamanProduk({super.key});
- 
+
   static const daftarProduk = [
     Produk(id: 'p1', nama: 'Nasi Goreng', harga: 15000),
     Produk(id: 'p2', nama: 'Es Teh Manis', harga: 5000),
     Produk(id: 'p3', nama: 'Ayam Geprek', harga: 18000),
   ];
- 
+
+  Future<void> simpanFavorit(Produk produk) async {
+    final favorit = ProdukFavorit(
+      idProduk: produk.id,
+      nama: produk.nama,
+      harga: produk.harga,
+    );
+    await HiveHelper.box.put(produk.id, favorit);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,6 +40,7 @@ class HalamanProduk extends StatelessWidget {
           return ProductCard(
             produk: produk,
             onTambah: () => context.read<KeranjangCubit>().tambah(produk),
+            onFavorit: () => simpanFavorit(produk),
           );
         },
       ),
